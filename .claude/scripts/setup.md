@@ -1,6 +1,6 @@
 # Claude Setup Script
 
-This document describes `.claude/setup.sh`, a bootstrap script for configuring Claude Code in this repository.
+This document describes `.claude/scripts/setup.sh`, a bootstrap script for configuring Claude Code in this repository.
 
 ## Purpose
 
@@ -10,6 +10,7 @@ The script standardizes local Claude Code setup for contributors by installing r
 
 - Claude Code CLI is installed and available on `PATH` (`claude` command).
 - Python 3 is available (`python3` command).
+- Git is installed (`git` command) — used to resolve the project root.
 - `rtk` can be installed:
     - macOS: Homebrew must be installed.
     - Linux: `curl` is required.
@@ -20,12 +21,10 @@ The script standardizes local Claude Code setup for contributors by installing r
 From anywhere inside the repository:
 
 ```bash
-bash .claude/setup.sh
-# or, if placed in a subdirectory:
 bash .claude/scripts/setup.sh
 ```
 
-The script resolves the project root via `git rev-parse --show-toplevel`, so it works regardless of where inside the repo it is placed.
+The script resolves the project root via `git rev-parse --show-toplevel`, so it works regardless of the current working directory.
 
 ## What the script does
 
