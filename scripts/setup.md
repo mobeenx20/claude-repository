@@ -17,11 +17,15 @@ The script standardizes local Claude Code setup for contributors by installing r
 
 ## Run
 
-From repository root:
+From anywhere inside the repository:
 
 ```bash
 bash .claude/setup.sh
+# or, if placed in a subdirectory:
+bash .claude/scripts/setup.sh
 ```
+
+The script resolves the project root via `git rev-parse --show-toplevel`, so it works regardless of where inside the repo it is placed.
 
 ## What the script does
 
