@@ -64,7 +64,6 @@ Installs these plugins with `--scope project`:
 
 Sets or updates:
 
-- `model`: `claude-sonnet-4-6`
 - `enabledPlugins`: ensures all required plugin entries are enabled
 - `env.CAVEMAN_DEFAULT_MODE`: `ultra`
 

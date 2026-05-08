@@ -118,12 +118,11 @@ else
   echo "Skipped: caveman-statusline.sh not found in plugin cache."
 fi
 
-step "Set model + enable plugins (project-scoped)"
+step "Enable plugins (project-scoped)"
 python3 - <<'PY'
 import json, pathlib
 p = pathlib.Path(".claude/settings.json")
 data = json.loads(p.read_text()) if p.exists() else {}
-data["model"] = "claude-sonnet-4-6"
 ep = data.setdefault("enabledPlugins", {})
 for plugin in [
     "skill-creator@claude-plugins-official",
@@ -140,7 +139,6 @@ for plugin in [
     ep[plugin] = True
 data.setdefault("env", {})["CAVEMAN_DEFAULT_MODE"] = "ultra"
 p.write_text(json.dumps(data, indent=2) + "\n")
-print("✓ Model set to claude-sonnet-4-6")
 print("✓ All plugins enabled in settings.json")
 print("✓ Caveman default set to ultra")
 PY
