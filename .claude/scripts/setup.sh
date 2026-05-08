@@ -10,6 +10,14 @@ command -v claude >/dev/null 2>&1 || {
   echo "Error: 'claude' CLI not on PATH. Install Claude Code first: https://claude.com/claude-code" >&2
   exit 1
 }
+command -v git >/dev/null 2>&1 || {
+  echo "Error: 'git' not found. Install git and re-run." >&2
+  exit 1
+}
+command -v python3 >/dev/null 2>&1 || {
+  echo "Error: 'python3' not found. Install Python 3 and re-run." >&2
+  exit 1
+}
 
 step "Plugin marketplaces"
 claude plugin marketplace add JuliusBrussee/caveman
