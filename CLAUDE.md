@@ -73,8 +73,8 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 **Code answers when code can answer.**
 
-Use me for: classification, drafting, summarization, extraction.
-Do NOT use me for: routing, retries, deterministic transforms.
+Use the model for: classification, drafting, summarization, extraction.
+Do NOT use the model for: routing, retries, deterministic transforms.
 If code can answer, code answers.
 
 ## 6. Token Budgets Are Not Advisory
