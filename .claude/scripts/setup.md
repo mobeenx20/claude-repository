@@ -31,7 +31,7 @@ The script resolves the project root internally via `git rev-parse --show-toplev
 
 ### 1) Preflight checks
 
-- Verifies `claude` CLI is available.
+- Verifies `claude`, `git`, `python3`, and `jq` are available on `PATH`.
 
 ### 2) Plugin marketplace setup
 
@@ -60,15 +60,16 @@ Installs these plugins with `--scope project`:
 - Creates project hook at `.claude/hooks/enforce-rtk.sh`.
 - Ensures hook registration exists in `.claude/settings.local.json`.
 
-### 5) Global status line integration
+### 5) Project-aware status line
 
 - Generates `~/.claude/statusline-command.sh` — a combined statusline showing:
-    - Caveman badge (if plugin is cached)
+    - Caveman badge — reads `env.CAVEMAN_DEFAULT_MODE` from the project's `.claude/settings.json` using the CWD provided in stdin JSON. Falls back to the global flag file (`~/.claude/.caveman-active`) for projects without the env var. This ensures each project displays its own configured caveman level, even when multiple sessions are open simultaneously.
     - Git branch (current branch or short SHA)
     - Via tool (Node.js, Rust, Go, or Python — detected from project marker files)
     - Claude context info (model name, context usage %, effort level)
 - Points `~/.claude/settings.json` statusLine at the generated script.
 - Requires `jq` at runtime for parsing Claude Code's JSON input.
+- Runtime mode changes via `/caveman lite` are not reflected in the badge (the per-turn text reinforcement still shows the correct mode).
 
 ### 6) Project defaults in `.claude/settings.json`
 
@@ -88,6 +89,7 @@ Sets or updates:
 - `.claude/settings.local.json`
 - `.claude/settings.json`
 - `~/.claude/settings.json` (global user settings)
+- `~/.claude/statusline-command.sh` (generated statusline script)
 
 ## Idempotency
 

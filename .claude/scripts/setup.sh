@@ -118,11 +118,38 @@ statusline_script="$HOME/.claude/statusline-command.sh"
 cat > "$statusline_script" <<'STATUSLINE'
 #!/usr/bin/env bash
 INPUT=$(cat)
+CWD=$(printf '%s' "$INPUT" | jq -r '.cwd // empty' 2>/dev/null)
+[ -z "$CWD" ] && CWD="$PWD"
 
-# Caveman badge — discovered at runtime so plugin updates don't break path
+# Caveman badge — reads project config so each project shows its own level
 CAVEMAN=""
-CAVEMAN_SL=$(/bin/ls -dt "$HOME"/.claude/plugins/cache/caveman/caveman/*/hooks/caveman-statusline.sh 2>/dev/null | head -1)
-[ -n "$CAVEMAN_SL" ] && CAVEMAN=$(bash "$CAVEMAN_SL" <<< "")
+CAVEMAN_MODE=""
+if [ -n "$CWD" ] && [ -f "$CWD/.claude/settings.json" ]; then
+  CAVEMAN_MODE=$(jq -r '.env.CAVEMAN_DEFAULT_MODE // empty' "$CWD/.claude/settings.json" 2>/dev/null)
+fi
+if [ -z "$CAVEMAN_MODE" ]; then
+  FLAG="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/.caveman-active"
+  if [ -f "$FLAG" ] && [ ! -L "$FLAG" ]; then
+    CAVEMAN_MODE=$(head -c 64 "$FLAG" 2>/dev/null | tr -d '\n\r' | tr '[:upper:]' '[:lower:]' | tr -cd 'a-z0-9-')
+  fi
+fi
+case "$CAVEMAN_MODE" in
+  lite|full|ultra|wenyan-lite|wenyan|wenyan-full|wenyan-ultra|commit|review|compress)
+    if [ "$CAVEMAN_MODE" = "full" ]; then
+      CAVEMAN=$(printf '\033[38;5;172m[CAVEMAN]\033[0m')
+    else
+      SUFFIX=$(printf '%s' "$CAVEMAN_MODE" | tr '[:lower:]' '[:upper:]')
+      CAVEMAN=$(printf '\033[38;5;172m[CAVEMAN:%s]\033[0m' "$SUFFIX")
+    fi
+    ;;
+esac
+if [ -n "$CAVEMAN" ] && [ "${CAVEMAN_STATUSLINE_SAVINGS:-1}" != "0" ]; then
+  SAVINGS_FILE="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/.caveman-statusline-suffix"
+  if [ -f "$SAVINGS_FILE" ] && [ ! -L "$SAVINGS_FILE" ]; then
+    SAVINGS=$(head -c 64 "$SAVINGS_FILE" 2>/dev/null | tr -d '\000-\037')
+    [ -n "$SAVINGS" ] && CAVEMAN="$CAVEMAN $(printf '\033[38;5;172m%s\033[0m' "$SAVINGS")"
+  fi
+fi
 
 # Git branch
 BRANCH=""
@@ -132,8 +159,6 @@ GIT_OUT=""
 
 # Via tool (starship-style language detection)
 VIA=""
-CWD=$(printf '%s' "$INPUT" | jq -r '.cwd // empty' 2>/dev/null)
-[ -z "$CWD" ] && CWD="$PWD"
 if [ -n "$CWD" ]; then
   if [ -f "$CWD/package.json" ]; then
     NODE_V=$(node -v 2>/dev/null)
