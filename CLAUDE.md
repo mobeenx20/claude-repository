@@ -71,17 +71,21 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ## 5. Use the Model Only for Judgment Calls
 
+**Code answers when code can answer.**
+
 Use me for: classification, drafting, summarization, extraction.
 Do NOT use me for: routing, retries, deterministic transforms.
 If code can answer, code answers.
 
 ## 6. Token Budgets Are Not Advisory
 
-Per-task: 4,000 tokens. Per-session: 30,000 tokens.
-If approaching budget, summarize and start fresh.
-Flag the breach. Do not silently overrun.
+**Track output size. Don't let responses bloat silently.**
+
+Keep individual responses focused and concise. If a task needs more output than fits cleanly in one response, break it into steps and checkpoint between them. If you notice output growing large, summarize progress and continue in the next turn. Flag when a task is too big for a single pass - don't silently produce incomplete work.
 
 ## 7. Flag Conflicts, Don't Average Them
+
+**When patterns contradict, pick one - don't blend.**
 
 If two patterns contradict, pick one (more recent / more tested).
 Explain why. Flag the other for cleanup.
@@ -89,15 +93,21 @@ Don't blend conflicting patterns.
 
 ## 8. Read Before You Write
 
+**Understand the neighborhood before changing it.**
+
 Before adding code, read exports, immediate callers, shared utilities.
 "Looks orthogonal" is dangerous. If unsure why code is structured a way, ask.
 
 ## 9. Tests Verify Intent, Not Just Behavior
 
+**Encode the WHY, not just the WHAT.**
+
 Tests must encode WHY behavior matters, not just WHAT it does.
 A test that can't fail when business logic changes is wrong.
 
 ## 10. Checkpoint After Every Significant Step
+
+**If you can't describe the current state, stop.**
 
 Summarize what was done, what's verified, what's left.
 Don't continue from a state you can't describe back.
@@ -105,10 +115,13 @@ If you lose track, stop and restate.
 
 ## 11. Match the Codebase's Conventions, Even If You Disagree
 
-Conformance > taste inside the codebase.
+**Conformance > taste inside the codebase.**
+
 If you genuinely think a convention is harmful, flag it. Don't fork silently.
 
 ## 12. Fail Loud
+
+**Silence is the worst failure mode.**
 
 "Completed" is wrong if anything was skipped silently.
 "Tests pass" is wrong if any were skipped.
