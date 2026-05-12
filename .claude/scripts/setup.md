@@ -10,6 +10,7 @@ The script standardizes local Claude Code setup for contributors by installing r
 
 - Claude Code CLI is installed and available on `PATH` (`claude` command).
 - Python 3 is available (`python3` command).
+- `jq` is installed (`jq` command) — used by the statusline script to parse Claude Code JSON.
 - Git is installed (`git` command) — used to resolve the project root.
 - `rtk` can be installed:
     - macOS: Homebrew must be installed.
@@ -61,7 +62,13 @@ Installs these plugins with `--scope project`:
 
 ### 5) Global status line integration
 
-- If available in plugin cache, sets global status line command in `~/.claude/settings.json` to caveman statusline hook.
+- Generates `~/.claude/statusline-command.sh` — a combined statusline showing:
+    - Caveman badge (if plugin is cached)
+    - Git branch (current branch or short SHA)
+    - Via tool (Node.js, Rust, Go, or Python — detected from project marker files)
+    - Claude context info (model name, context usage %, effort level)
+- Points `~/.claude/settings.json` statusLine at the generated script.
+- Requires `jq` at runtime for parsing Claude Code's JSON input.
 
 ### 6) Project defaults in `.claude/settings.json`
 
